@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28307.960
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medius", "Medius\Medius.csproj", "{4D7F9AC5-7E03-4C1A-8EEF-8F2175E6E7F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UYA.Medius.Shared", "..\UYA.Medius.Shared\UYA.Medius.Shared.csproj", "{6AA79E4F-0F60-48C7-9036-8794AE504A89}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UYA.Medius.Shared", "UYA.Medius.Shared\UYA.Medius.Shared.csproj", "{E765C918-2462-4BD9-802D-2472E1B040A2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{4D7F9AC5-7E03-4C1A-8EEF-8F2175E6E7F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D7F9AC5-7E03-4C1A-8EEF-8F2175E6E7F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D7F9AC5-7E03-4C1A-8EEF-8F2175E6E7F2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6AA79E4F-0F60-48C7-9036-8794AE504A89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6AA79E4F-0F60-48C7-9036-8794AE504A89}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6AA79E4F-0F60-48C7-9036-8794AE504A89}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6AA79E4F-0F60-48C7-9036-8794AE504A89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E765C918-2462-4BD9-802D-2472E1B040A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E765C918-2462-4BD9-802D-2472E1B040A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E765C918-2462-4BD9-802D-2472E1B040A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E765C918-2462-4BD9-802D-2472E1B040A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

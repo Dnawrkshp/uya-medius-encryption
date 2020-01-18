@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\UYA.Medius.Shared\UYA.Medius.Shared.csproj" />
+    <ProjectReference Include="..\UYA.Medius.Shared\UYA.Medius.Shared.csproj" />
   </ItemGroup>
 
 </Project>

@@ -172,14 +172,14 @@ namespace UYA.Medius.Shared
 
         #region Hash
 
-        public byte[] Hash(byte[] input)
+        public static byte[] Hash(byte[] input)
         {
             byte[] result = new byte[4];
             Hash(input, 0, input.Length, result, 0);
             return result;
         }
 
-        private void Hash(
+        private static void Hash(
             byte[] input,
                 int inOff,
                 int length,
@@ -202,10 +202,7 @@ namespace UYA.Medius.Shared
         #endregion
 
         #region Encrypt
-
-
-        #region Decrypt
-
+        
         private void Encrypt(
                 byte[] input,
                 int inOff,
@@ -216,25 +213,46 @@ namespace UYA.Medius.Shared
 
             for (int i = 0; i < length; ++i)
             {
-                y = (y + 5) % 0xFF;
+                x = (x + 5) & 0xff;
+                y = (y + engineState[x]) & 0xff;
 
-                int v0 = engineState[y];
-                byte a1 = (byte)(v0 & 0xFF);
-                x = (x + v0) & 0xFF;
+                // Swap
+                byte temp = engineState[x];
+                engineState[x] = engineState[y];
+                engineState[y] = temp;
 
-                v0 = engineState[x];
-                engineState[y] = (byte)v0;
-                engineState[x] = a1;
+                // Xor
+                output[i + outOff] = (byte)(
+                    input[i + inOff]
+                    ^
+                    engineState[(engineState[x] + engineState[y]) & 0xff]
+                    );
 
-                byte a2 = input[i];
-                v0 = (v0 + a1) & 0xFF;
+                // 
+                y = (engineState[input[i + inOff]] + y) & 0xff;
 
-                int v1 = engineState[a2];
-                a1 = engineState[v0];
-                v1 += x;
-                a2 ^= a1;
-                x = v1 & 0xFF;
-                output[i] = a2;
+                if (false)
+                {
+                    y = (y + 5) % 0xFF;
+
+                    int v0 = engineState[y];
+                    byte a1 = (byte)(v0 & 0xFF);
+                    x = (x + v0) & 0xFF;
+
+                    v0 = engineState[x];
+                    engineState[y] = (byte)v0;
+                    engineState[x] = a1;
+
+                    byte a2 = input[i];
+                    v0 = (v0 + a1) & 0xFF;
+
+                    int v1 = engineState[a2];
+                    a1 = engineState[v0];
+                    v1 += x;
+                    a2 ^= a1;
+                    x = v1 & 0xFF;
+                    output[i] = a2;
+                }
             }
         }
 
@@ -249,8 +267,6 @@ namespace UYA.Medius.Shared
         }
 
         #endregion
-
-        #endregion
-
+        
     }
 }

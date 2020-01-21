@@ -1,6 +1,12 @@
 ﻿using CommandLine;
+using Org.BouncyCastle.Math;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 using UYA.Medius.Shared;
+
 
 namespace Medius
 {
@@ -8,11 +14,20 @@ namespace Medius
     {
         static int Main(string[] args)
         {
+            TestRSA.Handle92();
+            Console.WriteLine();
+            TestRSA.Handle93();
+
+
+            Console.ReadKey();
+            return 0;
+
+
             return CommandLine.Parser.Default.ParseArguments<DecryptOptions, EncryptOptions>(args)
-    .MapResult(
-      (DecryptOptions opts) => RunDecryptAndReturnExitCode(opts),
-      (EncryptOptions opts) => RunEncryptAndReturnExitCode(opts),
-      errs => 1);
+                .MapResult(
+                  (DecryptOptions opts) => RunDecryptAndReturnExitCode(opts),
+                  (EncryptOptions opts) => RunEncryptAndReturnExitCode(opts),
+                  errs => 1);
         }
 
         static int RunDecryptAndReturnExitCode(DecryptOptions opts)
@@ -80,7 +95,8 @@ namespace Medius
                 Array.Copy(packetBytes, i + 3, hash, 0, 4);
                 byte[] result = packer.Decrypt(hash, buf);
 
-                Console.WriteLine($"ID:{id.ToString("X2")} LEN:{len} SHA1:{Utils.BAToString(hash)} DATA:");
+                string operationResult = (Convert.ToBase64String(RC4.Hash(result)) == Convert.ToBase64String(hash)) ? "SUCCESS" : "FAILURE";
+                Console.WriteLine($"ID:{id.ToString("X2")} LEN:{len} SHA1:{Utils.BAToString(hash)} RESULT:{operationResult} DATA:");
                 Utils.FancyPrintBA(result);
                 Console.WriteLine();
 
@@ -125,7 +141,7 @@ namespace Medius
             cipher = packer.Encrypt(messageBytes);
             
             // Output
-            Console.WriteLine($"SHA1:{Utils.BAToString(packer.Hash(messageBytes))} CIPHER:{Utils.BAToString(cipher)}");
+            Console.WriteLine($"SHA1:{Utils.BAToString(RC4.Hash(messageBytes))} CIPHER:{Utils.BAToString(cipher)}");
             Console.WriteLine();
         }
 

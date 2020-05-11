@@ -17,7 +17,21 @@ namespace Medius
             TestRSA.Handle92();
             Console.WriteLine();
             TestRSA.Handle93();
+            Console.WriteLine("\n\n");
 
+
+            byte[] raw = Utils.BAFromString("0108010100BC29000007CBF0876835BD72FE358D26ECDDB79F858A0CE1690DF49A19642D41B1B45A764A85586097AF6ABD65A1DAE4278E08848149F2EC6F2846FEAA039D4DE27D667F");
+            byte[] signed = Utils.BAFromString("34424493f946c42c3dd10c2c492fef0ff8e829fd324e3f7cca9a4bac7459e041b10ccd500d57955fad539983ce099e65033e505766e78c24143d62978df74372");
+
+
+
+            byte[] hash = Utils.BAFromString("666ed671");
+            var rc4 = new RC4(Utils.BAFromString("60937E5CD170EF0B5E0DF26DD93D84F04723CEDA8946886A329C8BE407D82EFADB383517D488448D5CA6F5D5F0204DC7BF5100528CE0373B7FDE1AA379D59486"));
+            byte[] ourSigned = rc4.Encrypt(raw);
+            byte[] ourUnsigned = rc4.Decrypt(hash, signed);
+
+            Console.Write($"0x80 RC4 SIGNED  : {signed.SequenceEqual(ourSigned)} {Utils.BAToString(ourSigned)}\n\n");
+            Console.Write($"0x80 RC4 UNSIGNED: {ourUnsigned.SequenceEqual(raw)} {Utils.BAToString(ourUnsigned)} Hash:{RC4.Hash(ourUnsigned).SequenceEqual(hash)}\n\n");
 
             Console.ReadKey();
             return 0;

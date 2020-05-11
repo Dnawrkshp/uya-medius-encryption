@@ -1,5 +1,6 @@
 ﻿using Org.BouncyCastle.Crypto.Digests;
 using System;
+using System.Linq;
 
 namespace UYA.Medius.Shared
 {
@@ -127,10 +128,9 @@ namespace UYA.Medius.Shared
                 byte[] output,
                 int outOff)
         {
-
             for (int i = 0; i < length; ++i)
             {
-                y = (y + 5) % 0xFF;
+                y = (y + 5) & 0xFF;
 
                 int v0 = engineState[y];
                 byte a2 = (byte)(v0 & 0xFF);

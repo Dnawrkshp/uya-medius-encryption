@@ -8,10 +8,14 @@
 
   <ItemGroup>
     <None Remove="keys.txt" />
+    <None Remove="sample-messages.txt" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="keys.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sample-messages.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

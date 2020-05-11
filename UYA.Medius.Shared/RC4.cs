@@ -12,6 +12,8 @@ namespace UYA.Medius.Shared
     {
         private readonly static int STATE_LENGTH = 256;
 
+        public MessageSignContext EncryptionType { get; protected set; } = MessageSignContext.ID_00;
+
         /*
         * variables to hold the state of the RC4 engine
         * during encryption and decryption
@@ -25,8 +27,9 @@ namespace UYA.Medius.Shared
         /// Initialize with key.
         /// UYA wants a 512 bit key.
         /// </summary>
-        public RC4(byte[] key)
+        public RC4(byte[] key, MessageSignContext encryptionType)
         {
+            EncryptionType = encryptionType;
             SetKey(key);
         }
 
@@ -169,38 +172,7 @@ namespace UYA.Medius.Shared
         }
 
         #endregion
-
-        #region Hash
-
-        public static byte[] Hash(byte[] input)
-        {
-            byte[] result = new byte[4];
-            Hash(input, 0, input.Length, result, 0);
-            return result;
-        }
-
-        private static void Hash(
-            byte[] input,
-                int inOff,
-                int length,
-                byte[] output,
-                int outOff)
-        {
-            byte[] result = new byte[20];
-
-            // Compute sha1 hash
-            Sha1Digest digest = new Sha1Digest();
-            digest.BlockUpdate(input, inOff, length);
-            digest.DoFinal(result, 0);
-
-            // Extra operation that UYA wants
-            result[3] = (byte)((result[3] & 0x1F) | 0x60);
-
-            Array.Copy(result, 0, output, outOff, 4);
-        }
-
-        #endregion
-
+        
         #region Encrypt
         
         private void Encrypt(
@@ -259,7 +231,7 @@ namespace UYA.Medius.Shared
         public byte[] Encrypt(byte[] data)
         {
             // Set seed
-            SetKey(workingKey, Hash(data));
+            SetKey(workingKey, Utils.Hash(data, EncryptionType));
 
             byte[] result = new byte[data.Length];
             Encrypt(data, 0, data.Length, result, 0);

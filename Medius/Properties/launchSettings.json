@@ -2,7 +2,7 @@
   "profiles": {
     "Medius": {
       "commandName": "Project",
-      "commandLineArgs": "bruteforce-decrypt -p 9f080051e984669604ba84a6f9bcf8"
+      "commandLineArgs": "decrypt-stream -f \"sample-messages.txt\""
     }
   }
 }

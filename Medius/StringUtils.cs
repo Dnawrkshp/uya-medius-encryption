@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Org.BouncyCastle.Math;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Medius
 {
-    public static class Utils
+    public static class StringUtils
     {
         public static byte[] BAFromString(string str)
         {
@@ -12,6 +13,16 @@ namespace Medius
 
             for (int i = 0; i < buffer.Length; ++i)
                 buffer[i] = byte.Parse(str.Substring(i * 2, 2), System.Globalization.NumberStyles.HexNumber);
+
+            return buffer;
+        }
+
+        public static byte[] BAFromStringFlipped(string str)
+        {
+            byte[] buffer = new byte[str.Length / 2];
+
+            for (int i = 0; i < buffer.Length; ++i)
+                buffer[i] = byte.Parse(str.Substring((buffer.Length - i - 1) * 2, 2), System.Globalization.NumberStyles.HexNumber);
 
             return buffer;
         }

@@ -1,4 +1,5 @@
-﻿using Org.BouncyCastle.Math;
+﻿using Org.BouncyCastle.Crypto.Digests;
+using Org.BouncyCastle.Math;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -27,6 +28,5 @@ namespace UYA.Medius.Shared
         {
             return c.ModPow(_d, _n);
         }
-
     }
 }

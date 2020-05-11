@@ -3,6 +3,7 @@ using Org.BouncyCastle.Math;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using UYA.Medius.Shared;
@@ -14,33 +15,11 @@ namespace Medius
     {
         static int Main(string[] args)
         {
-            TestRSA.Handle92();
-            Console.WriteLine();
-            TestRSA.Handle93();
-            Console.WriteLine("\n\n");
-
-
-            byte[] raw = Utils.BAFromString("0108010100BC29000007CBF0876835BD72FE358D26ECDDB79F858A0CE1690DF49A19642D41B1B45A764A85586097AF6ABD65A1DAE4278E08848149F2EC6F2846FEAA039D4DE27D667F");
-            byte[] signed = Utils.BAFromString("34424493f946c42c3dd10c2c492fef0ff8e829fd324e3f7cca9a4bac7459e041b10ccd500d57955fad539983ce099e65033e505766e78c24143d62978df74372");
-
-
-
-            byte[] hash = Utils.BAFromString("666ed671");
-            var rc4 = new RC4(Utils.BAFromString("60937E5CD170EF0B5E0DF26DD93D84F04723CEDA8946886A329C8BE407D82EFADB383517D488448D5CA6F5D5F0204DC7BF5100528CE0373B7FDE1AA379D59486"));
-            byte[] ourSigned = rc4.Encrypt(raw);
-            byte[] ourUnsigned = rc4.Decrypt(hash, signed);
-
-            Console.Write($"0x80 RC4 SIGNED  : {signed.SequenceEqual(ourSigned)} {Utils.BAToString(ourSigned)}\n\n");
-            Console.Write($"0x80 RC4 UNSIGNED: {ourUnsigned.SequenceEqual(raw)} {Utils.BAToString(ourUnsigned)} Hash:{RC4.Hash(ourUnsigned).SequenceEqual(hash)}\n\n");
-
-            Console.ReadKey();
-            return 0;
-
-
-            return CommandLine.Parser.Default.ParseArguments<DecryptOptions, EncryptOptions>(args)
+            return CommandLine.Parser.Default.ParseArguments<DecryptOptions, EncryptOptions, DecryptStreamOptions>(args)
                 .MapResult(
                   (DecryptOptions opts) => RunDecryptAndReturnExitCode(opts),
                   (EncryptOptions opts) => RunEncryptAndReturnExitCode(opts),
+                  (DecryptStreamOptions opts) => RunDecryptStreamAndReturnExitCode(opts),
                   errs => 1);
         }
 
@@ -60,6 +39,120 @@ namespace Medius
         {
             Console.WriteLine();
             EncryptMessage(opts.Key, opts.Message);
+
+#if DEBUG
+            Console.ReadKey();
+#endif
+
+            return 1;
+        }
+
+
+        static int RunDecryptStreamAndReturnExitCode(DecryptStreamOptions opts)
+        {
+            CipherContext context = new CipherContext()
+            {
+                // the private exponent is not correct for decrypting the 92 packet
+                // but the public and mod work for encrypting them
+                // we also know that the key sent in the 92 packet is a constant that is always equal to
+                // 6B8F99EC1BAF06D2674284B5305EE6E38B1DE7331F2FBF31DE497228B7C52162F18DAE8913C40C43C0E890D14EEE16AD07C64FD9281D8B972D78BE78D1B290CE
+                // for UYA NTSC
+                MASConnectCipher = new RSA(
+                    // modulus
+                    new BigInteger("10315955513017997681600210131013411322695824559688299373570246338038100843097466504032586443986679280716603540690692615875074465586629501752500179100369237", 10),
+
+                    // public exp
+                    new BigInteger("17", 10),
+
+                    // private exp
+                    new BigInteger("4854567300243763614870687120476899445974505675147434999327174747312047455575182761195687859800492317495944895566174677168271650454805328075020357360662513", 10)
+                    ),
+
+                // This keypair decrypts the 93 packet sent from the server to the client
+                // The 93 packet contains the session key used to encrypt all future packets
+                MASResponseCipher = new RSA(
+                    // mod
+                    new BigInteger("CE90B2D178BE782D978B1D28D94FC607AD16EE4ED190E8C0430CC41389AE8DF16221C5B7287249DE31BF2F1F33E71D8BE3E65E30B5844267D206AF1BEC998F6B", 16),
+
+                    // public exp
+                    new BigInteger("11", 16),
+
+                    // private exp
+                    new BigInteger("85A8EC2D3002C63B9E4AF4C014248F3224B47C14E1F45A5E4980BB1BB370F26DD8B80978FC2DCEC8B28563F1659A00B65C843D20732D3773E6AA95C37F9D5511", 16)
+                    )
+            };
+            
+            byte[] unsignedData = null;
+            byte[] hash = null;
+
+            try
+            {
+                string[] lines = File.ReadAllLines(opts.Filepath);
+                foreach (var line in lines)
+                {
+                    if (line != String.Empty && !line.StartsWith("//"))
+                    {
+                        // Read
+                        var rawMessages = RawMessage.FromString(line);
+
+                        foreach (var rawMessage in rawMessages)
+                        {
+                            // Reset
+                            unsignedData = null;
+                            hash = null;
+
+                            // Parse
+                            switch (rawMessage.Id)
+                            {
+                                // CLIENT AUTH
+                                case MessageId.ID_12:
+                                    {
+                                        // decryption not supported
+                                        // but for UYA NTSC we know this value to be
+                                        // 6B8F99EC1BAF06D2674284B5305EE6E38B1DE7331F2FBF31DE497228B7C52162F18DAE8913C40C43C0E890D14EEE16AD07C64FD9281D8B972D78BE78D1B290CE
+                                        break;
+                                    }
+                                // SESSION KEY
+                                case MessageId.ID_13:
+                                    {
+                                        unsignedData = rawMessage.Unsign(context);
+                                        context.SessionCipher = new RC4(unsignedData, MessageSignContext.Session);
+                                        break;
+                                    }
+                                case MessageId.ID_14:
+                                    {
+                                        unsignedData = rawMessage.Unsign(context);
+                                        context.Cipher94 = new RC4(unsignedData, MessageSignContext.UNK_94);
+                                        break;
+                                    }
+                                default:
+                                    {
+                                        unsignedData = rawMessage.Unsign(context);
+                                        break;
+                                    }
+                            }
+
+                            if (unsignedData != null)
+                            {
+                                if (rawMessage.Signed)
+                                {
+                                    hash = Utils.Hash(unsignedData, rawMessage.SignType);
+                                    bool match = Convert.ToBase64String(rawMessage.Hash) == Convert.ToBase64String(hash);
+                                    Console.Write("[" + (match ? "SUCCESS" : "FAILURE") + "] ");
+                                }
+
+                                Console.Write($"{rawMessage.Id} {(rawMessage.Signed ? rawMessage.SignType.ToString() : "")} {rawMessage.Data.Length} {StringUtils.BAToString(rawMessage.Hash)} {StringUtils.BAToString(rawMessage.Data)} => ");
+                                StringUtils.FancyPrintBA(unsignedData);
+                                Console.WriteLine();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
 
 #if DEBUG
             Console.ReadKey();
@@ -94,10 +187,10 @@ namespace Medius
 
         static void _decryptPacket(string key, string packet)
         {
-            byte[] keyBytes = Utils.BAFromString(key);
-            byte[] packetBytes = Utils.BAFromString(packet);
+            byte[] keyBytes = StringUtils.BAFromString(key);
+            byte[] packetBytes = StringUtils.BAFromString(packet);
 
-            RC4 packer = new RC4(keyBytes);
+            RC4 packer = new RC4(keyBytes, MessageSignContext.Session);
 
             for (int i = 0; i < packetBytes.Length;)
             {
@@ -109,9 +202,9 @@ namespace Medius
                 Array.Copy(packetBytes, i + 3, hash, 0, 4);
                 byte[] result = packer.Decrypt(hash, buf);
 
-                string operationResult = (Convert.ToBase64String(RC4.Hash(result)) == Convert.ToBase64String(hash)) ? "SUCCESS" : "FAILURE";
-                Console.WriteLine($"ID:{id.ToString("X2")} LEN:{len} SHA1:{Utils.BAToString(hash)} RESULT:{operationResult} DATA:");
-                Utils.FancyPrintBA(result);
+                string operationResult = (Convert.ToBase64String(Utils.Hash(result, MessageSignContext.Session)) == Convert.ToBase64String(hash)) ? "SUCCESS" : "FAILURE";
+                Console.WriteLine($"ID:{id.ToString("X2")} LEN:{len} SHA1:{StringUtils.BAToString(hash)} RESULT:{operationResult} DATA:");
+                StringUtils.FancyPrintBA(result);
                 Console.WriteLine();
 
                 i += len + 7;
@@ -145,21 +238,21 @@ namespace Medius
 
         static void _encryptMessage(string key, string message)
         {
-            byte[] keyBytes = Utils.BAFromString(key);
-            byte[] messageBytes = Utils.BAFromString(message); // System.Text.Encoding.UTF8.GetBytes(message);
+            byte[] keyBytes = StringUtils.BAFromString(key);
+            byte[] messageBytes = StringUtils.BAFromString(message); // System.Text.Encoding.UTF8.GetBytes(message);
             byte[] cipher = new byte[messageBytes.Length];
 
-            RC4 packer = new RC4(keyBytes);
+            RC4 packer = new RC4(keyBytes, MessageSignContext.Session);
 
             // TODO encrypt
             cipher = packer.Encrypt(messageBytes);
             
             // Output
-            Console.WriteLine($"SHA1:{Utils.BAToString(RC4.Hash(messageBytes))} CIPHER:{Utils.BAToString(cipher)}");
+            Console.WriteLine($"SHA1:{StringUtils.BAToString(Utils.Hash(messageBytes, MessageSignContext.Session))} CIPHER:{StringUtils.BAToString(cipher)}");
             Console.WriteLine();
         }
 
         #endregion
-
+        
     }
 }

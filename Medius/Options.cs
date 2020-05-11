@@ -25,4 +25,11 @@ namespace Medius
         [Option('m', "message", Required = true, HelpText = "Message as hexstring.")]
         public string Message { get; set; }
     }
+
+    [Verb("decrypt-stream", HelpText = "Decrypt a collection of medius messages")]
+    class DecryptStreamOptions
+    {
+        [Option('f', "filepath", Required = true, HelpText = "Path to file containing collection of medius messages.")]
+        public string Filepath { get; set; }
+    }
 }

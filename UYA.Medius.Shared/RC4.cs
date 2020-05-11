@@ -202,29 +202,6 @@ namespace UYA.Medius.Shared
 
                 // 
                 y = (engineState[input[i + inOff]] + y) & 0xff;
-
-                if (false)
-                {
-                    y = (y + 5) % 0xFF;
-
-                    int v0 = engineState[y];
-                    byte a1 = (byte)(v0 & 0xFF);
-                    x = (x + v0) & 0xFF;
-
-                    v0 = engineState[x];
-                    engineState[y] = (byte)v0;
-                    engineState[x] = a1;
-
-                    byte a2 = input[i];
-                    v0 = (v0 + a1) & 0xFF;
-
-                    int v1 = engineState[a2];
-                    a1 = engineState[v0];
-                    v1 += x;
-                    a2 ^= a1;
-                    x = v1 & 0xFF;
-                    output[i] = a2;
-                }
             }
         }
 

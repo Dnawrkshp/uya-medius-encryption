@@ -8,11 +8,15 @@
 
   <ItemGroup>
     <None Remove="keys.txt" />
+    <None Remove="rsa_keys.txt" />
     <None Remove="sample-messages.txt" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="keys.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="rsa_keys.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="sample-messages.txt">
@@ -22,6 +26,8 @@
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.7.82" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="PcapNet" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup>

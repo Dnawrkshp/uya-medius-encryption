@@ -29,6 +29,9 @@ namespace Medius
 
         public static string BAToString(byte[] buffer)
         {
+            if (buffer == null)
+                return "";
+
             string str = "";
             for (int i = 0; i < buffer.Length; ++i)
                 str += buffer[i].ToString("X2");

@@ -8,7 +8,7 @@ namespace UYA.Medius.Shared
     /// UYA's custom RC4 implementation,
     /// based off https://github.com/bcgit/bc-csharp/blob/f18a2dbbc2c1b4277e24a2e51f09cac02eedf1f5/crypto/src/crypto/engines/RC4Engine.cs
     /// </summary>
-    public class RC4
+    public class RC4 : ICipher
     {
         private readonly static int STATE_LENGTH = 256;
 
@@ -161,14 +161,14 @@ namespace UYA.Medius.Shared
             }
         }
 
-        public byte[] Decrypt(byte[] hash, byte[] data)
+        public bool Decrypt(byte[] data, byte[] hash, out byte[] plain)
         {
             // Set seed
             SetKey(workingKey, hash);
 
-            byte[] result = new byte[data.Length];
-            Decrypt(data, 0, data.Length, result, 0);
-            return result;
+            plain = new byte[data.Length];
+            Decrypt(data, 0, data.Length, plain, 0);
+            return true;
         }
 
         #endregion
@@ -205,14 +205,15 @@ namespace UYA.Medius.Shared
             }
         }
 
-        public byte[] Encrypt(byte[] data)
+        public bool Encrypt(byte[] data, out byte[] cipher, out byte[] hash)
         {
             // Set seed
-            SetKey(workingKey, Utils.Hash(data, EncryptionType));
+            hash = Utils.Hash(data, EncryptionType);
+            SetKey(workingKey, hash);
 
-            byte[] result = new byte[data.Length];
-            Encrypt(data, 0, data.Length, result, 0);
-            return result;
+            cipher = new byte[data.Length];
+            Encrypt(data, 0, data.Length, cipher, 0);
+            return true;
         }
 
         #endregion

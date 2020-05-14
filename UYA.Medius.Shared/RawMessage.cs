@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace UYA.Medius.Shared
 {
@@ -23,20 +24,34 @@ namespace UYA.Medius.Shared
 
             switch (SignType)
             {
-                case MessageSignContext.UNK_94: return context?.Cipher94?.Decrypt(Hash, Data);
-                case MessageSignContext.Session: return context?.SessionCipher?.Decrypt(Hash, Data);
+                case MessageSignContext.UNK_94: return Unsign(context.Cipher94);
+                case MessageSignContext.Session: return Unsign(context.SessionCipher);
                 case MessageSignContext.Authenticate:
                     {
                         if (Id == MessageId.ID_12)
-                            return context?.MASConnectCipher?.Decrypt(Data.ToBigInteger()).ToBA();
+                            return Unsign(context.MASConnectCipher);
                         else if (Id == MessageId.ID_13)
-                            return context?.MASResponseCipher?.Decrypt(Data.ToBigInteger()).ToBA();
+                            return Unsign(context.MASResponseCipher);
 
                         break;
                     }
             }
 
             throw new NotImplementedException($"Unable to decrype message ({Id}) with sign type {SignType}, hash:{BitConverter.ToString(Hash)}, data:{BitConverter.ToString(Data)}");
+        }
+
+        public byte[] Unsign(ICipher cipher)
+        {
+            if (cipher == null)
+                throw new InvalidOperationException($"Unable to decrypt message ({Id}) with sign type {SignType}, hash:{BitConverter.ToString(Hash)}, data:{BitConverter.ToString(Data)} with a null cipher.");
+
+            if (!Signed)
+                return Data;
+
+            if (cipher.Decrypt(Data, Hash, out var plain))
+                return plain;
+
+            throw new NotImplementedException($"Unable to decrypt message ({Id}) with sign type {SignType}, hash:{BitConverter.ToString(Hash)}, data:{BitConverter.ToString(Data)}");
         }
 
         public static List<RawMessage> FromString(string message)

@@ -5,7 +5,7 @@
     },
     "PS3_DECRYPT_STREAM": {
       "commandName": "Project",
-      "commandLineArgs": "decrypt-stream -v PS3 -f \"Z:\\Mods\\PS2\\Deadlocked\\net\\packets\\Ratchet4-filtered.txt\""
+      "commandLineArgs": "decrypt-stream -v PS3 -f \"Packets/PS3_DL/Ratchet4-filtered.txt\""
     },
     "PS2_UYA_DECRYPT_PACKET": {
       "commandName": "Project",

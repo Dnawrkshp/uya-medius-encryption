@@ -8,6 +8,32 @@
   <ItemGroup>
     <None Remove="Keys\asym_keys.txt" />
     <None Remove="Keys\sym_keys.txt" />
+    <None Remove="Packets\PS2_UYA\Cities_Aquatos.pcap" />
+    <None Remove="Packets\PS2_UYA\Created.pcap" />
+    <None Remove="Packets\PS2_UYA\Create_Game.pcap" />
+    <None Remove="Packets\PS2_UYA\heythere.pcap" />
+    <None Remove="Packets\PS2_UYA\Idle_in_Aridia.pcap" />
+    <None Remove="Packets\PS2_UYA\inviteBone.pcap" />
+    <None Remove="Packets\PS2_UYA\inviteqwer.pcap" />
+    <None Remove="Packets\PS2_UYA\invite_Bone.pcap" />
+    <None Remove="Packets\PS2_UYA\JoinPjs.pcap" />
+    <None Remove="Packets\PS2_UYA\login-10075_PAL.txt" />
+    <None Remove="Packets\PS2_UYA\login-10075_PAL_version.pcapng" />
+    <None Remove="Packets\PS2_UYA\msg_to_Raphiel.pcap" />
+    <None Remove="Packets\PS2_UYA\Public_Chat.pcap" />
+    <None Remove="Packets\PS2_UYA\Reject_Terms_SOCOM_I.pcap" />
+    <None Remove="Packets\PS2_UYA\toPjsgame.pcap" />
+    <None Remove="Packets\PS2_UYA\to_Aridia.pcap" />
+    <None Remove="Packets\PS2_UYA\To_Novalis.pcap" />
+    <None Remove="Packets\PS2_UYA\To_Tyhrranosis.pcap" />
+    <None Remove="Packets\PS2_UYA\To_Veldin.pcap" />
+    <None Remove="Packets\PS2_UYA\UYA_accept_EULA.pcap" />
+    <None Remove="Packets\PS2_UYA\UYA_Next.pcap" />
+    <None Remove="Packets\PS3_DL\master capture.pcapng" />
+    <None Remove="Packets\PS3_DL\Ratchet4-filtered.pcapng" />
+    <None Remove="Packets\PS3_DL\Ratchet4-filtered.txt" />
+    <None Remove="Packets\PS3_DL\Ratchet_Deadlocked_a8db8c88a9b40fc31c154d8a0fffa837%281%29.pcap" />
+    <None Remove="Packets\PS3_UYA\master capture online gameplay.pcapng" />
   </ItemGroup>
 
   <ItemGroup>
@@ -15,6 +41,84 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Keys\sym_keys.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packets\PS2_UYA\Cities_Aquatos.pcap">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packets\PS2_UYA\Created.pcap">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packets\PS2_UYA\Create_Game.pcap">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packets\PS2_UYA\heythere.pcap">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packets\PS2_UYA\Idle_in_Aridia.pcap">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packets\PS2_UYA\inviteBone.pcap">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packets\PS2_UYA\inviteqwer.pcap">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packets\PS2_UYA\invite_Bone.pcap">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packets\PS2_UYA\JoinPjs.pcap">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packets\PS2_UYA\login-10075_PAL.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packets\PS2_UYA\login-10075_PAL_version.pcapng">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packets\PS2_UYA\msg_to_Raphiel.pcap">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packets\PS2_UYA\Public_Chat.pcap">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packets\PS2_UYA\Reject_Terms_SOCOM_I.pcap">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packets\PS2_UYA\toPjsgame.pcap">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packets\PS2_UYA\to_Aridia.pcap">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packets\PS2_UYA\To_Novalis.pcap">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packets\PS2_UYA\To_Tyhrranosis.pcap">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packets\PS2_UYA\To_Veldin.pcap">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packets\PS2_UYA\UYA_accept_EULA.pcap">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packets\PS2_UYA\UYA_Next.pcap">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packets\PS3_DL\master capture.pcapng">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packets\PS3_DL\Ratchet4-filtered.pcapng">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packets\PS3_DL\Ratchet4-filtered.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packets\PS3_DL\Ratchet_Deadlocked_a8db8c88a9b40fc31c154d8a0fffa837(1).pcap">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packets\PS3_UYA\master capture online gameplay.pcapng">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -29,9 +133,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Packets\PS3_UYA\" />
-    <Folder Include="Packets\PS3_DL\" />
-    <Folder Include="Packets\PS2_UYA\" />
     <Folder Include="Properties\" />
   </ItemGroup>
 

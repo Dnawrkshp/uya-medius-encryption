@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Keys\asym_keys.txt" />
+    <None Remove="Keys\sym_keys.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Keys\asym_keys.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Keys\sym_keys.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Medius.Crypto\Medius.Crypto.csproj" />
+    <ProjectReference Include="..\Medius.Shared\Medius.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Packets\PS3_UYA\" />
+    <Folder Include="Packets\PS3_DL\" />
+    <Folder Include="Packets\PS2_UYA\" />
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+</Project>

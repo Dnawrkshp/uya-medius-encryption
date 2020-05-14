@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "Medius": {
-      "commandName": "Project",
-      "commandLineArgs": "decrypt-stream -f \"Z:\\Mods\\PS2\\Deadlocked\\net\\packets\\Ratchet4-filtered.txt\""
-    }
-  }
-}

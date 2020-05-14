@@ -1,0 +1,19 @@
+{
+  "profiles": {
+    "MediusTool": {
+      "commandName": "Project"
+    },
+    "PS3_DECRYPT_STREAM": {
+      "commandName": "Project",
+      "commandLineArgs": "decrypt-stream -v PS3 -f \"Z:\\Mods\\PS2\\Deadlocked\\net\\packets\\Ratchet4-filtered.txt\""
+    },
+    "PS2_UYA_DECRYPT_PACKET": {
+      "commandName": "Project",
+      "commandLineArgs": "decrypt -v PS2_UYA -p 8b3200eef1b167828686768ebc6d96e134eb1b61db164e285b516427b20cfbcd31c10b5658f4227ad0f4833b9d955b19c7f8e7951a052fdfab8b1a007647256a4e0c5db7c93829ef4770e467b8769773662bd8827c9995c19af18b3200b4f06f7e36613ba6a76137adeb411775abf4f683b96b719fbbdffe0bc261b63f199e1053de7a26c3255fffc0b0c4d63f1005ca48f39d"
+    },
+    "PS2_UYA_ENCRYPT_PACKET": {
+      "commandName": "Project",
+      "commandLineArgs": "encrypt-symmetric -v PS2_UYA -k 60937E5CD170EF0B5E0DF26DD93D84F04723CEDA8946886A329C8BE407D82EFADB383517D488448D5CA6F5D5F0204DC7BF5100528CE0373B7FDE1AA379D59486 -m 41424344454647"
+    }
+  }
+}

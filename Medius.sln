@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.960
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medius", "Medius\Medius.csproj", "{4D7F9AC5-7E03-4C1A-8EEF-8F2175E6E7F2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medius.Crypto", "Medius.Crypto\Medius.Crypto.csproj", "{AC46182A-9086-46F6-A983-2941A51185F0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UYA.Medius.Shared", "UYA.Medius.Shared\UYA.Medius.Shared.csproj", "{E765C918-2462-4BD9-802D-2472E1B040A2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medius.PS2.UYA", "Medius.PS2.UYA\Medius.PS2.UYA.csproj", "{93F99810-CC17-4669-9189-C8497ED2BC3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medius.Shared", "Medius.Shared\Medius.Shared.csproj", "{91EC8112-B7BC-489F-9CB7-7B6CC46DAEA7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediusTool", "MediusTool\MediusTool.csproj", "{4D16BDA8-3B12-45C8-9193-A3E4E8F94C27}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +17,22 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4D7F9AC5-7E03-4C1A-8EEF-8F2175E6E7F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4D7F9AC5-7E03-4C1A-8EEF-8F2175E6E7F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4D7F9AC5-7E03-4C1A-8EEF-8F2175E6E7F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4D7F9AC5-7E03-4C1A-8EEF-8F2175E6E7F2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E765C918-2462-4BD9-802D-2472E1B040A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E765C918-2462-4BD9-802D-2472E1B040A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E765C918-2462-4BD9-802D-2472E1B040A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E765C918-2462-4BD9-802D-2472E1B040A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC46182A-9086-46F6-A983-2941A51185F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC46182A-9086-46F6-A983-2941A51185F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC46182A-9086-46F6-A983-2941A51185F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC46182A-9086-46F6-A983-2941A51185F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93F99810-CC17-4669-9189-C8497ED2BC3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93F99810-CC17-4669-9189-C8497ED2BC3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93F99810-CC17-4669-9189-C8497ED2BC3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93F99810-CC17-4669-9189-C8497ED2BC3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91EC8112-B7BC-489F-9CB7-7B6CC46DAEA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91EC8112-B7BC-489F-9CB7-7B6CC46DAEA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91EC8112-B7BC-489F-9CB7-7B6CC46DAEA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91EC8112-B7BC-489F-9CB7-7B6CC46DAEA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D16BDA8-3B12-45C8-9193-A3E4E8F94C27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D16BDA8-3B12-45C8-9193-A3E4E8F94C27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D16BDA8-3B12-45C8-9193-A3E4E8F94C27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D16BDA8-3B12-45C8-9193-A3E4E8F94C27}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

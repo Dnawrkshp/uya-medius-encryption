@@ -39,11 +39,12 @@ namespace MediusTool
             if (File.Exists(SYM_KEYS_PATH))
                 SymmetricKeys = File.ReadAllLines(SYM_KEYS_PATH).ToList();
 
-            return CommandLine.Parser.Default.ParseArguments<DecryptOp, EncryptSymmetricOp, DecryptStreamOp>(args)
+            return CommandLine.Parser.Default.ParseArguments<DecryptOp, EncryptSymmetricOp, DecryptStreamOp, DecryptPcapOp>(args)
                .MapResult(
                  (DecryptOp opts) => opts.Run(),
                  (EncryptSymmetricOp opts) => opts.Run(),
                  (DecryptStreamOp opts) => opts.Run(),
+                 (DecryptPcapOp opts) => opts.Run(),
                  errs => 1);
         }
 
@@ -80,8 +81,10 @@ namespace MediusTool
         {
             foreach (var cipher in ciphers)
             {
-                if (!SymmetricCiphers.Any(x => x.Value.Equals(cipher)))
+                if (!SymmetricCiphers.Any(x => x.Value.Any(y => y.Equals(cipher))))
                 {
+                    Console.WriteLine($"Added new symmetric key: {cipher.ToString()}");
+
                     SymmetricCiphers[cipher.Context].Add(cipher);
                 }
             }

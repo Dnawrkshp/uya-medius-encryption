@@ -12,7 +12,7 @@ namespace MediusTool.Operations
     [Verb("decrypt", HelpText = "Decrypt packet")]
     class DecryptOp
     {
-        [Option('p', "packet", Required = true, HelpText = "Packet as a hexstring.")]
+        [Option('i', "input", Required = true, HelpText = "Packet as a hexstring.")]
         public string Packet { get; set; }
 
         [Option('v', "version", Required = true, Default = Versions.PS2_UYA, HelpText = "PS2_UYA|PS3")]

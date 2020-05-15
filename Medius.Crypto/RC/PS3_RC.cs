@@ -244,5 +244,10 @@ namespace Medius.Crypto
 
         #endregion
 
+        public override string ToString()
+        {
+            return $"PS3_RC({Context}, {BitConverter.ToString(_key).Replace("-", "")})";
+        }
+
     }
 }

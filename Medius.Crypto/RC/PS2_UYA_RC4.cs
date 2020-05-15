@@ -172,7 +172,8 @@ namespace Medius.Crypto
 
             plain = new byte[data.Length];
             Decrypt(data, 0, data.Length, plain, 0);
-            return true;
+            Hash(plain, out var checkHash);
+            return hash.SequenceEqual(checkHash);
         }
 
         #endregion
@@ -247,6 +248,11 @@ namespace Medius.Crypto
         }
 
         #endregion
+
+        public override string ToString()
+        {
+            return $"PS2_UYA_RC4({Context}, {BitConverter.ToString(workingKey).Replace("-", "")})";
+        }
 
     }
 }

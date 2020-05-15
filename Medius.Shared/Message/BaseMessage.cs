@@ -110,10 +110,11 @@ namespace Medius.Shared.Message
                             byte[] hash = reader.ReadBytes(4);
                             CipherContext context = (CipherContext)(hash[3] >> 5);
                             var ciphers = getCiphersCallback(id, context);
+                            byte[] cipherText = reader.ReadBytes(len);
 
                             foreach (var cipher in ciphers)
                             {
-                                if (cipher.Decrypt(reader.ReadBytes(len), hash, out var plain))
+                                if (cipher.Decrypt(cipherText, hash, out var plain))
                                 {
                                     msg = Instantiate(classType, id, plain);
                                     break;
@@ -121,7 +122,7 @@ namespace Medius.Shared.Message
                             }
 
                             if (msg == null)
-                                throw new InvalidOperationException($"Unable to decrypt {id}: {BitConverter.ToString(messageBuffer).Replace("-", "")}");
+                                Console.WriteLine($"Unable to decrypt {id}: {BitConverter.ToString(messageBuffer).Replace("-", "")}");
                         }
                         else
                         {

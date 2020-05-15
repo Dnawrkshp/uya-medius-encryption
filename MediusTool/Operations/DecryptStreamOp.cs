@@ -12,7 +12,7 @@ namespace MediusTool.Operations
     [Verb("decrypt-stream", HelpText = "Decrypt a collection of medius messages")]
     class DecryptStreamOp
     {
-        [Option('f', "filepath", Required = true, HelpText = "Path to file containing collection of medius messages.")]
+        [Option('i', "input", Required = true, HelpText = "Path to file containing collection of medius messages.")]
         public string Filepath { get; set; }
 
         [Option('v', "version", Required = true, Default = Versions.PS2_UYA, HelpText = "PS2_UYA|PS3")]

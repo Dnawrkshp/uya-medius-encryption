@@ -61,11 +61,15 @@ namespace Medius.Crypto
             plain = new byte[input.Length];
             Array.Copy(input, 0, plain, 0, plain.Length);
 
+            // Check if empty hash
+            // If hash is 0, the data is already in plaintext
+            if (hash[0] == 0 && hash[1] == 0 && hash[2] == 0 && (hash[3] & 0x1F) == 0)
+                return true;
+
             // IV
             byte[] iv = new byte[0x10];
             uint[] seed = new uint[4];
             Array.Copy(_key, 0, iv, 0, 0x10);
-            FlipWords(iv);
 
             for (int i = 0; i < 4; ++i)
                 seed[i] = BitConverter.ToUInt32(iv, i * 4);

@@ -167,10 +167,19 @@ namespace Medius.Crypto
 
         public bool Decrypt(byte[] data, byte[] hash, out byte[] plain)
         {
+            plain = new byte[data.Length];
+
+            // Check if empty hash
+            // If hash is 0, the data is already in plaintext
+            if (hash[0] == 0 && hash[1] == 0 && hash[2] == 0 && (hash[3] & 0x1F) == 0)
+            {
+                Array.Copy(data, 0, plain, 0, data.Length);
+                return true;
+            }
+
             // Set seed
             SetKey(workingKey, hash);
 
-            plain = new byte[data.Length];
             Decrypt(data, 0, data.Length, plain, 0);
             Hash(plain, out var checkHash);
             return hash.SequenceEqual(checkHash);

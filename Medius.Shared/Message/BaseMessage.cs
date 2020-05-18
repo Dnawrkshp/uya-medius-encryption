@@ -105,9 +105,12 @@ namespace Medius.Shared.Message
                             classType = null;
 
                         // Decrypt
-                        if (encrypted)
+                        if (len > 0 && encrypted)
                         {
                             byte[] hash = reader.ReadBytes(4);
+                            byte[] ex = null;
+                            if (id == MessageIds.ID_03)
+                                ex = reader.ReadBytes(2);
                             CipherContext context = (CipherContext)(hash[3] >> 5);
                             var ciphers = getCiphersCallback(id, context);
                             byte[] cipherText = reader.ReadBytes(len);

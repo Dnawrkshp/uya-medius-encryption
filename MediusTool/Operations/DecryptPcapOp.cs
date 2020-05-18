@@ -2,6 +2,7 @@
 using Medius.Crypto;
 using Medius.Shared.Message;
 using Org.BouncyCastle.Bcpg;
+using Org.BouncyCastle.Math.EC.Rfc7748;
 using PacketDotNet;
 using SharpPcap;
 using SharpPcap.LibPcap;
@@ -30,6 +31,8 @@ namespace MediusTool.Operations
         private IEnumerable<ICipher> _asymCiphers = null;
 
         private List<DecryptPcapMessage> _packets = new List<DecryptPcapMessage>();
+
+        private int frame = 0;
         public int Run()
         {
             // populate collection of ciphers
@@ -62,6 +65,17 @@ namespace MediusTool.Operations
 
         void device_OnPacketArrival(object sender, CaptureEventArgs e)
         {
+            ushort[] ports = new ushort[]
+            {
+                10071,
+                10075,
+                10078,
+                10079
+            };
+
+            // packet index
+            ++frame;
+
             try
             {
                 var packet = PacketDotNet.Packet.ParsePacket(e.Packet.LinkLayerType, e.Packet.Data);
@@ -73,29 +87,82 @@ namespace MediusTool.Operations
                     var ip = packet.Extract<IPPacket>();
                     if (ip != null)
                     {
+                        DecryptPcapMessage packetMessage = null;
+
                         var tcp = packet.Extract<TcpPacket>();
-                        if (tcp != null && (tcp.DestinationPort == 10075 || tcp.DestinationPort == 10078 || tcp.SourcePort == 10078 || tcp.SourcePort == 10075))
+                        if (tcp != null && (ports.Contains(tcp.DestinationPort) || ports.Contains(tcp.SourcePort)))
                         {
                             if (tcp.PayloadData != null && tcp.PayloadData.Length > 0)
                             {
-                                DecryptPcapMessage packetMessage = null;
-
-                                // Check to see if fragment
-                                var lastFromSender = _packets.LastOrDefault(x => x.SourceAddress.Equals(ip.SourceAddress));
-                                if (lastFromSender != null && lastFromSender.Ack == tcp.AcknowledgmentNumber)
+                                int i = 0;
+                                while (i < tcp.PayloadData.Length)
                                 {
-                                    lastFromSender.Buffer.AddRange(tcp.PayloadData);
-                                }
-                                else
-                                {
-                                    packetMessage = new DecryptPcapMessage()
+                                    // Check to see if fragment
+                                    var lastFromSender = _packets.LastOrDefault(x => x.SourceAddress.Equals(ip.SourceAddress));
+                                    if (lastFromSender != null && !lastFromSender.IsFull)
                                     {
-                                        SourceAddress = ip.SourceAddress,
-                                        Ack = tcp.AcknowledgmentNumber,
-                                        Message = $"PACKET: {ip.SourceAddress}:{tcp.SourcePort} => {ip.DestinationAddress}:{tcp.DestinationPort}",
-                                        Buffer = new List<byte>(tcp.PayloadData)
-                                    };
-                                    _packets.Add(packetMessage);
+                                        while (!lastFromSender.IsFull && i < tcp.PayloadData.Length)
+                                            lastFromSender.Buffer.Add(tcp.PayloadData[i++]);
+                                    }
+                                    else
+                                    {
+                                        byte id = tcp.PayloadData[i + 0];
+                                        uint len = (uint)(tcp.PayloadData[i + 2] << 8) | (uint)tcp.PayloadData[i + 1]; // + (uint)(id >= 0x80 ? 4 : 0);
+                                        if (id >= 0x80 && len > 0)
+                                            len += 4;
+
+                                        packetMessage = new DecryptPcapMessage()
+                                        {
+                                            SourceAddress = ip.SourceAddress,
+                                            Len = (uint)(len+3),
+                                            Message = $"{frame} TCP PACKET: {ip.SourceAddress}:{tcp.SourcePort} => {ip.DestinationAddress}:{tcp.DestinationPort}",
+                                            Buffer = new List<byte>()
+                                        };
+
+                                        while (!packetMessage.IsFull && i < tcp.PayloadData.Length)
+                                            packetMessage.Buffer.Add(tcp.PayloadData[i++]);
+
+                                        _packets.Add(packetMessage);
+                                    }
+                                }
+                            }
+                        }
+
+                        var udp = packet.Extract<UdpPacket>();
+                        if (udp != null && ((udp.DestinationPort > 50000 && udp.DestinationPort < 51000) || (udp.SourcePort > 50000 && udp.SourcePort < 51000)))
+                        {
+                            if (udp.PayloadData != null && udp.PayloadData.Length > 0)
+                            {
+                                int i = 0;
+                                while (i < udp.PayloadData.Length)
+                                {
+                                    // Check to see if fragment
+                                    var lastFromSender = _packets.LastOrDefault(x => x.SourceAddress.Equals(ip.SourceAddress));
+                                    if (lastFromSender != null && !lastFromSender.IsFull)
+                                    {
+                                        while (!lastFromSender.IsFull && i < udp.PayloadData.Length)
+                                            lastFromSender.Buffer.Add(udp.PayloadData[i++]);
+                                    }
+                                    else
+                                    {
+                                        byte id = udp.PayloadData[i + 0];
+                                        uint len = (uint)(udp.PayloadData[i + 2] << 8) | (uint)udp.PayloadData[i + 1]; // + (uint)(id >= 0x80 ? 4 : 0);
+                                        if (id >= 0x80 && len > 0)
+                                            len += 4;
+
+                                        packetMessage = new DecryptPcapMessage()
+                                        {
+                                            SourceAddress = ip.SourceAddress,
+                                            Len = (uint)(len + 3),
+                                            Message = $"{frame} UDP PACKET: {ip.SourceAddress}:{udp.SourcePort} => {ip.DestinationAddress}:{udp.DestinationPort}",
+                                            Buffer = new List<byte>()
+                                        };
+
+                                        while (!packetMessage.IsFull && i < udp.PayloadData.Length)
+                                            packetMessage.Buffer.Add(udp.PayloadData[i++]);
+
+                                        _packets.Add(packetMessage);
+                                    }
                                 }
                             }
                         }
@@ -155,7 +222,7 @@ namespace MediusTool.Operations
                             }
                     }
 
-                    Console.WriteLine($"[SUCCESS] ID:{msg.Id} PLAINTEXT: ");
+                    Console.WriteLine($"[SUCCESS] ID:{msg.Id} LEN:0x{(msg as RawMessage)?.Contents?.Length ?? 0:X2} PLAINTEXT: ");
                     Utils.FancyPrintBA((msg as RawMessage).Contents);
                     Console.WriteLine();
                 }
@@ -196,7 +263,9 @@ namespace MediusTool.Operations
     {
         public IPAddress SourceAddress;
         public string Message;
-        public uint Ack;
+        public uint Len;
         public List<byte> Buffer;
+
+        public bool IsFull => Buffer.Count >= Len;
     }
 }

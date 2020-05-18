@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -8,6 +8,7 @@
   <ItemGroup>
     <None Remove="Keys\asym_keys.txt" />
     <None Remove="Keys\sym_keys.txt" />
+    <None Remove="Packets\PS2_DL\b41.pcap" />
     <None Remove="Packets\PS2_UYA\Cities_Aquatos.pcap" />
     <None Remove="Packets\PS2_UYA\Created.pcap" />
     <None Remove="Packets\PS2_UYA\Create_Game.pcap" />
@@ -41,6 +42,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Keys\sym_keys.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packets\PS2_DL\b41.pcap">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Packets\PS2_UYA\Cities_Aquatos.pcap">

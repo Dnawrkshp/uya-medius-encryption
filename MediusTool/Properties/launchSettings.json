@@ -22,6 +22,18 @@
     "PS2_UYA_DECRYPT_CITIES_AQUATOS": {
       "commandName": "Project",
       "commandLineArgs": "decrypt-pcap -v PS2_UYA -i \"Packets/PS2_UYA/Cities_Aquatos.pcap\""
+    },
+    "PS2_DL_DECRYPT_B41": {
+      "commandName": "Project",
+      "commandLineArgs": "decrypt-pcap -v PS2_UYA -i \"Packets/PS2_DL/b41.pcap\""
+    },
+    "PS2_DL_DECRYPT_EMPTY_HASH": {
+      "commandName": "Project",
+      "commandLineArgs": "decrypt -v PS2_UYA -i 82260000000060000F00000000000000004000000003000000000000000000426164676572343100000000F701"
+    },
+    "PS3_DECRYPT_PACKET": {
+      "commandName": "Project",
+      "commandLineArgs": "decrypt -v PS3  -i 804800C771EC662988300DA74EFC86B1322978A4D9B790B5E320AB1C28908AF7ED05E33DF3F4B46B41B420B2CCB019E262367531EE9E3901E0FF9EE3F2CB2318A97FF23F381D1B2978A66A18B84395"
     }
   }
 }

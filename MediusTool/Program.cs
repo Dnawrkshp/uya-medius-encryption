@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using CommandLine;
 using Newtonsoft.Json.Converters;
+using Org.BouncyCastle.Math;
 
 namespace MediusTool
 {

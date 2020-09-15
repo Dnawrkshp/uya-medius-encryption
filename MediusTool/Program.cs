@@ -8,6 +8,7 @@ using System.Linq;
 using CommandLine;
 using Newtonsoft.Json.Converters;
 using Org.BouncyCastle.Math;
+using System.Text;
 
 namespace MediusTool
 {
@@ -28,6 +29,8 @@ namespace MediusTool
 
         static int Main(string[] args)
         {
+            Console.OutputEncoding = Encoding.UTF8;
+
             // Load asymmetric keys
             if (File.Exists(ASYM_KEYS_PATH))
             {

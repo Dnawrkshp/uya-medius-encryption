@@ -125,7 +125,7 @@ namespace Medius.Shared.Message
                             }
 
                             if (msg == null)
-                                Console.WriteLine($"Unable to decrypt {id}: {BitConverter.ToString(messageBuffer).Replace("-", "")}");
+                                Console.WriteLine($"Unable to decrypt {id}: {BitConverter.ToString(messageBuffer).Replace("-", "")}\n\n");
                         }
                         else
                         {
@@ -176,7 +176,7 @@ namespace Medius.Shared.Message
                             if (cipher.Decrypt(reader.ReadBytes(len), hash, out var plain))
                                 msg = Instantiate(classType, id, plain);
                             else
-                                throw new InvalidOperationException($"Unable to decrypt {id}: {BitConverter.ToString(messageBuffer).Replace("-", "")}");
+                                throw new InvalidOperationException($"Unable to decrypt {id}: {BitConverter.ToString(messageBuffer).Replace("-", "")}\n\n");
                         }
                         else
                         {

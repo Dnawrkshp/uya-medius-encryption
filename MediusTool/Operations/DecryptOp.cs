@@ -31,8 +31,15 @@ namespace MediusTool.Operations
         {
             byte[] packetBytes = Utils.BAFromString(packet);
 
+            Console.WriteLine();
+
             // populate collection of ciphers
-            IEnumerable<ICipher> asymCiphers = Program.AsymmetricKeys.Select(x => x as ICipher);
+            IEnumerable<ICipher> asymCiphers = null;
+            switch (Version)
+            {
+                case Versions.PS2_UYA: { asymCiphers = Program.AsymmetricKeys.Select(x => x as ICipher); break; }
+                case Versions.PS3: { asymCiphers = Program.PS3_AsymmetricKeys.Select(x => x as ICipher); break; }
+            }
             Program.CreateBruteforceCiphers(Version);
 
             try

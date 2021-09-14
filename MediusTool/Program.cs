@@ -8,6 +8,7 @@ using System.Linq;
 using CommandLine;
 using Newtonsoft.Json.Converters;
 using Org.BouncyCastle.Math;
+using System.Text;
 
 namespace MediusTool
 {
@@ -28,22 +29,50 @@ namespace MediusTool
 
         static int Main(string[] args)
         {
+            if (false)
+            {
+                BigInteger pub = new BigInteger(1, Utils.BAFromStringFlipped("".Replace(" ", "")));
+                BigInteger priv = new BigInteger(1, Utils.BAFromStringFlipped("".Replace(" ", "")));
+
+                Console.WriteLine(pub);
+                Console.WriteLine(priv);
+
+
+                RSA rsaTest = new RSA(pub, new BigInteger("17"), priv);
+
+                byte[] plain = Encoding.ASCII.GetBytes("HELLO");
+                bool a = rsaTest.Encrypt(plain, out var cipher, out var hash);
+
+                bool b = rsaTest.Decrypt(cipher, hash, out var unsigned);
+
+                Console.WriteLine($"Encrypt: {a}, Decrypt: {b}");
+                Console.ReadLine();
+            }
+
+
             // Load asymmetric keys
             if (File.Exists(ASYM_KEYS_PATH))
             {
                 AsymmetricKeys = JsonConvert.DeserializeObject<List<RSA>>(File.ReadAllText(ASYM_KEYS_PATH));
                 foreach (var rsa in AsymmetricKeys)
+                {
+                    Console.WriteLine(rsa.Comment);
+                    Console.WriteLine($"N: {BitConverter.ToString(rsa.N.ToByteArrayUnsigned().ToArray()).Replace("-", "")}");
+                    Console.WriteLine($"D: {BitConverter.ToString(rsa.D.ToByteArrayUnsigned().ToArray()).Replace("-", "")}");
+                    Console.WriteLine("\n\n");
                     PS3_AsymmetricKeys.Add(new PS3_RSA(rsa.N, rsa.E, rsa.D));
+                }
             }
 
             // Load symmetric keys
             if (File.Exists(SYM_KEYS_PATH))
                 SymmetricKeys = File.ReadAllLines(SYM_KEYS_PATH).ToList();
 
-            return CommandLine.Parser.Default.ParseArguments<DecryptOp, EncryptSymmetricOp, DecryptStreamOp, DecryptPcapOp>(args)
+            return CommandLine.Parser.Default.ParseArguments<DecryptOp, EncryptSymmetricOp, DecryptSymmetricOp, DecryptStreamOp, DecryptPcapOp>(args)
                .MapResult(
                  (DecryptOp opts) => opts.Run(),
                  (EncryptSymmetricOp opts) => opts.Run(),
+                 (DecryptSymmetricOp opts) => opts.Run(),
                  (DecryptStreamOp opts) => opts.Run(),
                  (DecryptPcapOp opts) => opts.Run(),
                  errs => 1);

@@ -47,8 +47,9 @@ namespace Medius.Crypto
                 Array.Copy(b, 0, iv_buffer, i * 4, 4);
             }
 
-            RC_Pass(iv_buffer, ref iv);
+            RC_Pass(iv_buffer, ref iv, true);
             RC_Pass(input, ref iv, true);
+            cipher = input;
             return true;
         }
 
@@ -67,22 +68,22 @@ namespace Medius.Crypto
                 return true;
 
             // IV
-            byte[] iv = new byte[0x10];
-            uint[] seed = new uint[4];
-            Array.Copy(_key, 0, iv, 0, 0x10);
+            byte[] iv_buffer = new byte[0x10];
+            uint[] iv = new uint[4];
+            Array.Copy(_key, 0, iv_buffer, 0, 0x10);
 
             for (int i = 0; i < 4; ++i)
-                seed[i] = BitConverter.ToUInt32(iv, i * 4);
-            RC_Pass(hash, ref seed);
+                iv[i] = BitConverter.ToUInt32(iv_buffer, i * 4);
+            RC_Pass(hash, ref iv);
 
             for (int i = 0; i < 4; ++i)
             {
-                var b = BitConverter.GetBytes(seed[i]);
-                Array.Copy(b, 0, iv, i * 4, 4);
+                var b = BitConverter.GetBytes(iv[i]);
+                Array.Copy(b, 0, iv_buffer, i * 4, 4);
             }
 
-            RC_Pass(iv, ref seed);
-            RC_Pass(plain, ref seed, true);
+            RC_Pass(iv_buffer, ref iv, true);
+            RC_Pass(plain, ref iv, true, true);
 
             Hash(plain, out var checkHash);
             return checkHash.SequenceEqual(hash);
@@ -165,7 +166,7 @@ namespace Medius.Crypto
             }
         }
 
-        protected static void RC_Pass(byte[] input, ref uint[] iv, bool sign = false)
+        protected static void RC_Pass(byte[] input, ref uint[] iv, bool sign = false, bool decrypt = false)
         {
             uint r0 = 0x00000000;
             uint r3 = 0x5B3AA654;
@@ -205,15 +206,18 @@ namespace Medius.Crypto
                 r16 = ~r16;
 
                 r0 = (uint)((buffer[i + 0] << 24) | (buffer[i + 1] << 16) | (buffer[i + 2] << 8) | (buffer[i + 3] << 0));
+                if (decrypt)
+                    r0 ^= r19;
                 r19 ^= r0;
 
                 if (sign)
                 {
-                    byte[] r19_b = BitConverter.GetBytes(r19);
-                    buffer[i + 0] = r19_b[0];
-                    buffer[i + 1] = r19_b[1];
-                    buffer[i + 2] = r19_b[2];
-                    buffer[i + 3] = r19_b[3];
+                    byte[] r19_b = BitConverter.GetBytes(decrypt ? r0 : r19);
+                    Array.Copy(r19_b, 0, buffer, i, 4);
+                    //buffer[i + 0] = r19_b[0];
+                    //buffer[i + 1] = r19_b[1];
+                    //buffer[i + 2] = r19_b[2];
+                    //buffer[i + 3] = r19_b[3];
                 }
             }
 

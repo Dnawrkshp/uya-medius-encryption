@@ -67,10 +67,29 @@ namespace MediusTool.Operations
         {
             ushort[] ports = new ushort[]
             {
+                2000,
+                2001,
+               // 10070,
                 10071,
+                10072,
+                10073,
+                10074,
                 10075,
+                10076,
+                10077,
                 10078,
-                10079
+                10079,
+                10080,
+                10090,
+                10091,
+                10092,
+                10093,
+                10094,
+                10095,
+                10096,
+                10097,
+                10098,
+                10099,
             };
 
             // packet index
@@ -89,6 +108,7 @@ namespace MediusTool.Operations
                     {
                         DecryptPcapMessage packetMessage = null;
 
+
                         var tcp = packet.Extract<TcpPacket>();
                         if (tcp != null && (ports.Contains(tcp.DestinationPort) || ports.Contains(tcp.SourcePort)))
                         {
@@ -98,7 +118,7 @@ namespace MediusTool.Operations
                                 while (i < tcp.PayloadData.Length)
                                 {
                                     // Check to see if fragment
-                                    var lastFromSender = _packets.LastOrDefault(x => x.SourceAddress.Equals(ip.SourceAddress));
+                                    var lastFromSender = _packets.LastOrDefault(x => x.SourceAddress.Equals(ip.SourceAddress) && x.Port.Equals(tcp.SourcePort));
                                     if (lastFromSender != null && !lastFromSender.IsFull)
                                     {
                                         while (!lastFromSender.IsFull && i < tcp.PayloadData.Length)
@@ -114,6 +134,7 @@ namespace MediusTool.Operations
                                         packetMessage = new DecryptPcapMessage()
                                         {
                                             SourceAddress = ip.SourceAddress,
+                                            Port = tcp.SourcePort,
                                             Len = (uint)(len+3),
                                             Message = $"{frame} TCP PACKET: {ip.SourceAddress}:{tcp.SourcePort} => {ip.DestinationAddress}:{tcp.DestinationPort}",
                                             Buffer = new List<byte>()
@@ -129,7 +150,8 @@ namespace MediusTool.Operations
                         }
 
                         var udp = packet.Extract<UdpPacket>();
-                        if (udp != null && ((udp.DestinationPort > 50000 && udp.DestinationPort < 51000) || (udp.SourcePort > 50000 && udp.SourcePort < 51000)))
+                        // udp = null;
+                        if (udp != null && ((udp.DestinationPort >= 50000 && udp.DestinationPort < 50100) || (udp.SourcePort >= 50000 && udp.SourcePort < 50100) || ports.Contains(udp.DestinationPort) || ports.Contains(udp.SourcePort)))
                         {
                             if (udp.PayloadData != null && udp.PayloadData.Length > 0)
                             {
@@ -137,7 +159,7 @@ namespace MediusTool.Operations
                                 while (i < udp.PayloadData.Length)
                                 {
                                     // Check to see if fragment
-                                    var lastFromSender = _packets.LastOrDefault(x => x.SourceAddress.Equals(ip.SourceAddress));
+                                    var lastFromSender = _packets.LastOrDefault(x => x.SourceAddress.Equals(ip.SourceAddress) && x.Port.Equals(udp.SourcePort));
                                     if (lastFromSender != null && !lastFromSender.IsFull)
                                     {
                                         while (!lastFromSender.IsFull && i < udp.PayloadData.Length)
@@ -153,6 +175,7 @@ namespace MediusTool.Operations
                                         packetMessage = new DecryptPcapMessage()
                                         {
                                             SourceAddress = ip.SourceAddress,
+                                            Port = udp.SourcePort,
                                             Len = (uint)(len + 3),
                                             Message = $"{frame} UDP PACKET: {ip.SourceAddress}:{udp.SourcePort} => {ip.DestinationAddress}:{udp.DestinationPort}",
                                             Buffer = new List<byte>()
@@ -215,6 +238,18 @@ namespace MediusTool.Operations
                                 AddNewSymmetric(rawMessage.Contents);
                                 break;
                             }
+                        case MessageIds.ID_0a:
+                            {
+
+                                if (rawMessage.Contents.Length == 0xC6 && rawMessage.Contents[0] == 0x01 && rawMessage.Contents[1] == 0x08 && rawMessage.Contents[2] == 0x31)
+                                {
+                                    byte[] key = new byte[64];
+                                    Array.Copy(rawMessage.Contents, 0x62, key, 0, key.Length);
+                                    //AddNewSymmetric(key);
+                                }
+
+                                break;
+                            }
                         default:
                             {
 
@@ -262,6 +297,7 @@ namespace MediusTool.Operations
     class DecryptPcapMessage
     {
         public IPAddress SourceAddress;
+        public int Port;
         public string Message;
         public uint Len;
         public List<byte> Buffer;

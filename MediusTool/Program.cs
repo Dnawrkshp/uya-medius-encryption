@@ -61,7 +61,6 @@ namespace MediusTool
                     Console.WriteLine(rsa.Comment);
                     Console.WriteLine($"N: {BitConverter.ToString(rsa.N.ToByteArrayUnsigned().ToArray()).Replace("-", "")}");
                     Console.WriteLine($"D: {BitConverter.ToString(rsa.D.ToByteArrayUnsigned().ToArray()).Replace("-", "")}");
-                    Console.WriteLine("\n\n");
                     PS3_AsymmetricKeys.Add(new PS3_RSA(rsa.N, rsa.E, rsa.D));
                 }
             }
@@ -70,6 +69,7 @@ namespace MediusTool
             if (File.Exists(SYM_KEYS_PATH))
                 SymmetricKeys = File.ReadAllLines(SYM_KEYS_PATH).ToList();
 
+            Console.WriteLine("\n\n");
             return CommandLine.Parser.Default.ParseArguments<DecryptOp, EncryptSymmetricOp, DecryptSymmetricOp, DecryptStreamOp, DecryptPcapOp>(args)
                .MapResult(
                  (DecryptOp opts) => opts.Run(),

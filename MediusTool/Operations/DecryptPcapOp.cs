@@ -2,6 +2,7 @@
 using Medius.Crypto;
 using Medius.Shared.Message;
 using Org.BouncyCastle.Bcpg;
+using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Math.EC.Rfc7748;
 using PacketDotNet;
 using SharpPcap;
@@ -224,7 +225,9 @@ namespace MediusTool.Operations
                         // CLIENT AUTH
                         case MessageIds.ID_12:
                             {
-
+                                var key = rawMessage.Contents.Reverse().ToArray();
+                                var keyInt = new BigInteger(1, key);
+                                Console.WriteLine("N: " + keyInt.ToString());
                                 break;
                             }
                         // SESSION KEY

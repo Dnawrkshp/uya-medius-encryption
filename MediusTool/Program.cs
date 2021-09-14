@@ -29,6 +29,8 @@ namespace MediusTool
 
         static int Main(string[] args)
         {
+            Console.OutputEncoding = Encoding.UTF8;
+
             if (false)
             {
                 BigInteger pub = new BigInteger(1, Utils.BAFromStringFlipped("".Replace(" ", "")));

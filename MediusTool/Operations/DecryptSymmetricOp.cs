@@ -24,14 +24,17 @@ namespace MediusTool.Operations
 
         public int Run()
         {
-            _encryptMessage(Key, Message);
+            byte[] keyBytes = Utils.BAFromString(Key);
+            byte[] messageBytes = Utils.BAFromString(Message);
+            _decryptMessage(keyBytes, messageBytes);
+            _decryptMessage(keyBytes.Reverse().ToArray(), messageBytes);
+            _decryptMessage(Utils.FlipEndianness(keyBytes, 4), messageBytes);
+            _decryptMessage(Utils.FlipEndianness(keyBytes, 4).Reverse().ToArray(), messageBytes);
             return 0;
         }
 
-        void _encryptMessage(string key, string message)
+        void _decryptMessage(byte[] keyBytes, byte[] messageBytes)
         {
-            byte[] keyBytes = Utils.BAFromString(key);
-            byte[] messageBytes = Utils.BAFromString(message);
             ICipher cipher = null;
 
             var id = messageBytes[0];

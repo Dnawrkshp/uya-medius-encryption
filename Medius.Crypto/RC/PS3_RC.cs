@@ -168,6 +168,7 @@ namespace Medius.Crypto
 
         protected static void RC_Pass(byte[] input, ref uint[] iv, bool sign = false, bool decrypt = false)
         {
+            int i = 0;
             uint r0 = 0x00000000;
             uint r3 = 0x5B3AA654;
             uint r5 = 0x75970A4D;
@@ -185,7 +186,7 @@ namespace Medius.Crypto
             uint r18 = iv[2];
             uint r19 = iv[3];
 
-            for (int i = 0; i < input.Length; i += 4)
+            for (i = 0; i < input.Length; i += 4)
             {
                 r19 ^= r3;
                 r18 += r16;
@@ -221,6 +222,17 @@ namespace Medius.Crypto
                 }
             }
 
+            if (decrypt && i > input.Length)
+            {
+                i -= 4;
+                r3 = 0xFFFFFFFF;
+                r5 = (uint)(input.Length - i);
+                r5 = (r5 >> 3) | (r5 << 3);
+                r3 = (uint)((int)r3 << (int)r5);
+                r0 &= r3;
+                r19 ^= r0;
+            }
+
             iv[0] = r16;
             iv[1] = r17;
             iv[2] = r18;
@@ -229,7 +241,7 @@ namespace Medius.Crypto
             // Copy signed buffer back into input
             // This can be moved into the loop at some point
             if (sign)
-                for (int i = 0; i < input.Length; ++i)
+                for (i = 0; i < input.Length; ++i)
                     input[i] = buffer[i];
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace MediusTool
@@ -50,6 +51,22 @@ namespace MediusTool
 
             Console.WriteLine();
             Console.WriteLine(str);
+        }
+
+        public static byte[] FlipEndianness(byte[] buffer, int groupSize)
+        {
+            if (groupSize <= 1)
+                return buffer;
+
+            var newBuf = buffer.ToArray();
+            for (int i = 0; i < buffer.Length; i += groupSize)
+            {
+                for (int j = 0; j < (groupSize-1); ++j)
+                    newBuf[i + j] = buffer[i + j + 1];
+                newBuf[i + groupSize - 1] = buffer[i];
+            }
+
+            return newBuf;
         }
     }
 }

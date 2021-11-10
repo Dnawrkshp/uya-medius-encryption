@@ -33,8 +33,8 @@ namespace MediusTool
 
             if (false)
             {
-                BigInteger pub = new BigInteger(1, Utils.BAFromStringFlipped("".Replace(" ", "")));
-                BigInteger priv = new BigInteger(1, Utils.BAFromStringFlipped("".Replace(" ", "")));
+                BigInteger pub = new BigInteger(1, Utils.BAFromStringFlipped("CF16B818A204BA6DB8FC85D866E4F708E6CFA754A5A2399D08EAFDFDBBFF852D3F1C86944E157DD8F6408D7CD9CFDAB409D32FDDEE05BDDE8CFF303187B37469".Replace(" ", "")));
+                BigInteger priv = new BigInteger(1, Utils.BAFromStringFlipped("7CC5CCB73E8BFFB1888D870279767063A8EA2A619FDD3BBC0B1209B5384853408EC61AAFA8B9071F9E41AB93BB56DBCEA59EBF18CA113775FD146C3E97FB673D".Replace(" ", "")));
 
                 Console.WriteLine(pub);
                 Console.WriteLine(priv);
